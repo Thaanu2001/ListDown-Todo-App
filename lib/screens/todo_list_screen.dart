@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:listdown_todo_app/screens/info_screen.dart';
 import 'package:listdown_todo_app/screens/new_tast_screen.dart';
 
 import 'package:listdown_todo_app/global_variables.dart' as globals;
@@ -41,27 +42,46 @@ class _TodoListScreenState extends State<TodoListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              (DateFormat('EEEE dd LLLL')
-                  .format(DateTime.now())
-                  .toString()
-                  .toUpperCase()),
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              'Task List',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      (DateFormat('EEEE dd LLLL')
+                          .format(DateTime.now())
+                          .toString()
+                          .toUpperCase()),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    const Text(
+                      'Task List',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+                InkWell(
+                  child: const Icon(Icons.info_outline, color: Colors.blue),
+                  onTap: () {
+                    Route route =
+                        CupertinoPageRoute(builder: (context) => InfoScreen());
+                    Navigator.push(context, route);
+                  },
+                ),
+              ],
             ),
             Container(
               margin: const EdgeInsets.only(top: 15, bottom: 1),
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -70,15 +90,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Text(
-                      'Todo',
-                      style: TextStyle(
-                        fontSize: 22,
-                      ),
-                    ),
-                  ),
                   ValueListenableBuilder<Map>(
                     valueListenable: globals.todoList,
                     builder: (context, todoList, child) {

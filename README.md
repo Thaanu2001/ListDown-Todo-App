@@ -1,6 +1,8 @@
-# listdown_todo_app
+# ListDown - Simple Todo Mobile Application
 
-A new Flutter project.
+ListDown is a simple To-Do list mobile application developed using Flutter.
+
+![ListDown App](https://user-images.githubusercontent.com/55238280/147506913-bdc67172-04cc-4c22-8fd4-0b678ce8a2d5.png)
 
 ## Getting Started
 

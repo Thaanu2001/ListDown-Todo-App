@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:listdown_todo_app/screens/new_tast_screen.dart';
 
@@ -60,7 +61,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             ),
             Container(
               margin: const EdgeInsets.only(top: 15, bottom: 1),
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -69,10 +70,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Todo',
-                    style: TextStyle(
-                      fontSize: 22,
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Text(
+                      'Todo',
+                      style: TextStyle(
+                        fontSize: 22,
+                      ),
                     ),
                   ),
                   ValueListenableBuilder<Map>(
@@ -81,58 +85,90 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       return ListView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.zero,
                         children: [
                           for (var task in todoList.entries)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 14),
-                              child: Row(
+                            Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
                                 children: [
-                                  SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: InkWell(
-                                      child: IgnorePointer(
-                                        ignoring: true,
-                                        child: Radio(
-                                            value: task.value[2] as bool,
-                                            groupValue: true,
-                                            onChanged: (val) {}),
-                                      ),
-                                      onTap: () async {
-                                        task.value[2] = !task.value[2];
-                                        await LocalStore().updateData(task);
-                                        setState(() {});
-                                        if (await Vibration.hasVibrator() ??
-                                            false) {
-                                          Vibration.vibrate(duration: 100);
-                                        }
-                                      },
-                                    ),
+                                  SlidableAction(
+                                    onPressed: (context) {},
+                                    backgroundColor: Colors.blue,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.mode_edit,
+                                    label: 'Edit',
+                                    spacing: 8,
                                   ),
-                                  const SizedBox(width: 15),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        task.value[0],
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                        task.value[1],
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey[600],
-                                        ),
-                                      ),
-                                    ],
-                                  )
+                                  SlidableAction(
+                                    onPressed: (context) {},
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete,
+                                    label: 'Delete',
+                                    spacing: 8,
+                                  ),
                                 ],
                               ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(15, 8, 10, 8),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: InkWell(
+                                        child: IgnorePointer(
+                                          ignoring: true,
+                                          child: Radio(
+                                              value: task.value[2] as bool,
+                                              groupValue: true,
+                                              onChanged: (val) {}),
+                                        ),
+                                        onTap: () async {
+                                          task.value[2] = !task.value[2];
+                                          await LocalStore().updateData(task);
+                                          setState(() {});
+                                          if (await Vibration.hasVibrator() ??
+                                              false) {
+                                            Vibration.vibrate(duration: 100);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: 15),
+                                    InkWell(
+                                      splashColor: Colors.grey,
+                                      highlightColor: Colors.grey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            task.value[0],
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          Text(
+                                            task.value[1],
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey[600],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        print('adw');
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
+                          const SizedBox(height: 5),
                           if (todoList.isEmpty)
                             const Text(
                               'No tasks available',

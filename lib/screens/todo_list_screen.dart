@@ -5,6 +5,7 @@ import 'package:listdown_todo_app/screens/new_tast_screen.dart';
 
 import 'package:listdown_todo_app/global_variables.dart' as globals;
 import 'package:listdown_todo_app/services/local_store.dart';
+import 'package:vibration/vibration.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);
@@ -75,70 +76,75 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     ),
                   ),
                   ValueListenableBuilder<Map>(
-                      valueListenable: globals.todoList,
-                      builder: (context, todoList, child) {
-                        return ListView(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.only(top: 10),
-                          children: [
-                            for (var task in todoList.entries)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 14),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: InkWell(
-                                        child: IgnorePointer(
-                                          ignoring: true,
-                                          child: Radio(
-                                              value: task.value[2] as bool,
-                                              groupValue: true,
-                                              onChanged: (val) {}),
-                                        ),
-                                        onTap: () async {
-                                          task.value[2] = !task.value[2];
-                                          await LocalStore().updateData(task);
-                                          setState(() {});
-                                        },
+                    valueListenable: globals.todoList,
+                    builder: (context, todoList, child) {
+                      return ListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 10),
+                        children: [
+                          for (var task in todoList.entries)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 14),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: InkWell(
+                                      child: IgnorePointer(
+                                        ignoring: true,
+                                        child: Radio(
+                                            value: task.value[2] as bool,
+                                            groupValue: true,
+                                            onChanged: (val) {}),
                                       ),
+                                      onTap: () async {
+                                        task.value[2] = !task.value[2];
+                                        await LocalStore().updateData(task);
+                                        setState(() {});
+                                        if (await Vibration.hasVibrator() ??
+                                            false) {
+                                          Vibration.vibrate(duration: 100);
+                                        }
+                                      },
                                     ),
-                                    const SizedBox(width: 15),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          task.value[0],
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        Text(
-                                          task.value[1],
-                                          style: TextStyle(
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        task.value[0],
+                                        style: const TextStyle(
                                             fontSize: 16,
-                                            color: Colors.grey[600],
-                                          ),
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      Text(
+                                        task.value[1],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey[600],
                                         ),
-                                      ],
-                                    )
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
-                            if (todoList.isEmpty)
-                              const Text(
-                                'No tasks available',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.grey,
-                                ),
-                              )
-                          ],
-                        );
-                      })
+                            ),
+                          if (todoList.isEmpty)
+                            const Text(
+                              'No tasks available',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
+                              ),
+                            )
+                        ],
+                      );
+                    },
+                  )
                 ],
               ),
             ),

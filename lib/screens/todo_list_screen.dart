@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:listdown_todo_app/screens/new_tast_screen.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({Key? key}) : super(key: key);
@@ -16,11 +18,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('New Task'),
         icon: const Icon(Icons.add_circle_sharp),
-        onPressed: () {},
+        onPressed: () {
+          Route route =
+              CupertinoPageRoute(builder: (context) => const NewTaskScreen());
+          Navigator.push(context, route);
+        },
       ),
-      body: Container(
+      body: Padding(
         padding: EdgeInsets.fromLTRB(
-            30, MediaQuery.of(context).padding.top + 10, 30, 0),
+            20, MediaQuery.of(context).padding.top + 10, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

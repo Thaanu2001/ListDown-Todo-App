@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listdown_todo_app/services/local_store.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({Key? key}) : super(key: key);
@@ -8,6 +9,9 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
+  TextEditingController title = TextEditingController();
+  TextEditingController notes = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -35,7 +39,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                   ),
                   InkWell(
                     child: const Icon(Icons.done_rounded, size: 28),
-                    onTap: () => Navigator.pop(context),
+                    onTap: () async {
+                      await LocalStore().storeData(title.text, notes.text);
+                      Navigator.pop(context);
+                    },
                   ),
                 ],
               ),
@@ -54,6 +61,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: TextFormField(
+                          controller: title,
                           decoration: const InputDecoration(
                             hintText: 'Title',
                             enabledBorder: UnderlineInputBorder(
@@ -69,6 +77,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: TextFormField(
+                          controller: notes,
                           minLines: 3,
                           maxLines: 5,
                           decoration: const InputDecoration(

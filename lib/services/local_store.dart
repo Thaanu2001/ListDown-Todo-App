@@ -10,14 +10,13 @@ class LocalStore {
     String list = prefs.getString('todoList') ?? '';
 
     if (list == '') {
-      globals.todoList = {
-        getRandomString(10): [title, notes]
+      globals.todoList.value = {
+        getRandomString(10): [title, notes, false]
       };
     } else {
-      globals.todoList.addEntries({title, notes});
+      globals.todoList.value[getRandomString(10)] = [title, notes, false];
     }
-
-    prefs.setString('todoList', json.encode(globals.todoList));
+    prefs.setString('todoList', json.encode(globals.todoList.value));
   }
 
   getData() async {
@@ -25,8 +24,35 @@ class LocalStore {
     String list = prefs.getString('todoList') ?? '';
 
     if (list != '') {
-      globals.todoList = json.decode(list);
+      globals.todoList.value = await json.decode(list);
+      sortData();
     }
+  }
+
+  updateData(task) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (globals.todoList.value != {}) {
+      globals.todoList.value[task.key] = task.value;
+    }
+    sortData();
+    prefs.setString('todoList', json.encode(globals.todoList.value));
+  }
+
+  sortData() {
+    var doneList = {};
+    var todoList = {};
+
+    for (var task in globals.todoList.value.entries) {
+      if (!(task.value[2])) {
+        todoList[task.key] = task.value;
+      } else {
+        doneList[task.key] = task.value;
+      }
+    }
+
+    globals.todoList.value = todoList;
+    globals.todoList.value.addAll(doneList);
   }
 
   String getRandomString(int length) {

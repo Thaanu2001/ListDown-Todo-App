@@ -1,3 +1,5 @@
 library listdown.globals;
 
-Map todoList = {};
+import 'package:flutter/material.dart';
+
+final ValueNotifier<Map> todoList = ValueNotifier<Map>({});

@@ -42,6 +42,14 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     onTap: () async {
                       await LocalStore().storeData(title.text, notes.text);
                       Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Task Added!',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ],

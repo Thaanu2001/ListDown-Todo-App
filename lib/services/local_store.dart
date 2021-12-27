@@ -55,6 +55,16 @@ class LocalStore {
     globals.todoList.value.addAll(doneList);
   }
 
+  deleteData(taskKey) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (globals.todoList.value != {}) {
+      globals.todoList.value.remove(taskKey);
+    }
+    sortData();
+    prefs.setString('todoList', json.encode(globals.todoList.value));
+  }
+
   String getRandomString(int length) {
     String _chars =
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';

@@ -93,7 +93,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                 motion: const ScrollMotion(),
                                 children: [
                                   SlidableAction(
-                                    onPressed: (context) {},
+                                    onPressed: (context) {
+                                      Route route = CupertinoPageRoute(
+                                        builder: (context) => NewTaskScreen(
+                                          taskEntry: task,
+                                        ),
+                                      );
+                                      Navigator.push(context, route)
+                                          .then((value) => setState(() {}));
+                                    },
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,
                                     icon: Icons.mode_edit,
@@ -101,7 +109,19 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                     spacing: 8,
                                   ),
                                   SlidableAction(
-                                    onPressed: (context) {},
+                                    onPressed: (context) async {
+                                      await LocalStore().deleteData(task.key);
+                                      setState(() {});
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Task Deleted!',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                     backgroundColor: Colors.red,
                                     foregroundColor: Colors.white,
                                     icon: Icons.delete,
@@ -138,9 +158,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                       ),
                                     ),
                                     const SizedBox(width: 15),
-                                    InkWell(
-                                      splashColor: Colors.grey,
-                                      highlightColor: Colors.grey,
+                                    Flexible(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -160,9 +178,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                           ),
                                         ],
                                       ),
-                                      onTap: () {
-                                        print('adw');
-                                      },
                                     )
                                   ],
                                 ),
@@ -170,11 +185,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
                             ),
                           const SizedBox(height: 5),
                           if (todoList.isEmpty)
-                            const Text(
-                              'No tasks available',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
+                            const Padding(
+                              padding: EdgeInsets.only(left: 12, bottom: 10),
+                              child: Text(
+                                'No tasks available',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey,
+                                ),
                               ),
                             )
                         ],

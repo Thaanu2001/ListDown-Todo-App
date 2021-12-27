@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:listdown_todo_app/services/local_store.dart';
 
 class NewTaskScreen extends StatefulWidget {
-  const NewTaskScreen({Key? key}) : super(key: key);
+  final MapEntry? taskEntry;
+  const NewTaskScreen({Key? key, this.taskEntry}) : super(key: key);
 
   @override
   _NewTaskScreenState createState() => _NewTaskScreenState();
@@ -11,6 +12,23 @@ class NewTaskScreen extends StatefulWidget {
 class _NewTaskScreenState extends State<NewTaskScreen> {
   TextEditingController title = TextEditingController();
   TextEditingController notes = TextEditingController();
+
+  MapEntry? taskEntry;
+
+  @override
+  void initState() {
+    updateData();
+    super.initState();
+  }
+
+  updateData() {
+    if (widget.taskEntry != null) {
+      taskEntry = widget.taskEntry;
+
+      title.text = taskEntry!.value[0];
+      notes.text = taskEntry!.value[1];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +58,22 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                   InkWell(
                     child: const Icon(Icons.done_rounded, size: 28),
                     onTap: () async {
-                      await LocalStore().storeData(title.text, notes.text);
+                      if (taskEntry == null) {
+                        await LocalStore().storeData(title.text, notes.text);
+                      } else {
+                        taskEntry!.value[0] = title.text;
+                        taskEntry!.value[1] = notes.text;
+
+                        await LocalStore().updateData(taskEntry);
+                      }
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            'Task Added!',
-                            style: TextStyle(fontSize: 16),
+                            (taskEntry == null)
+                                ? 'Task Added!'
+                                : 'Task Updated!',
+                            style: const TextStyle(fontSize: 16),
                           ),
                         ),
                       );
